@@ -1,0 +1,77 @@
+<noscript>
+  <div
+    class="noscript"
+    style="
+      padding: 15px;
+      font-size: 20px;
+      color: #fff;
+      background-color: rgb(182, 49, 49);
+      text-align: center;
+    "
+  >
+    you don't have javascript enabled. Good luck with that.
+  </div>
+</noscript>
+<nav class="nav">
+  <div class="container">
+    <div class="logo"><img src="/images/logo.svg" alt="logo" /></div>
+    <div id="nav_btn" class="bars"><i class="fas fa-bars"></i></div>
+    <ul class="list">
+      <li><a href="/">Home</a></li>
+      <li>
+        <a href="/discord">Join Discord</a>
+      </li>
+      <% if (isUser) { %>
+      <li><a href="/addbot">Add Bot</a></li>
+      <% if (profileOwner) { %>
+      <div class="dropdown">
+        <div class="label">More<i class="fas fa-sort-down"></i></div>
+        <ul>
+          <a href="/explore"><li>Explore</li></a>
+          <a href="/queue"><li>Queue</li></a>
+        </ul>
+      </div>
+      <li class="auth logout">
+        <a href="/logout"
+          ><span class="i"><i class="fad fa-sign-out-alt"></i></span
+          ><span class="text">Logout</span></a
+        >
+      </li>
+      <% } else { %>
+      <div class="dropdown">
+        <div class="label">More<i class="fas fa-sort-down"></i></div>
+        <ul>
+          <a href="/explore"><li>Explore</li></a>
+          <a href="/queue"><li>Queue</li></a>
+        </ul>
+      </div>
+      <li class="avatar">
+        <a href="/user/<%= user.discord_id %>">
+          <% if (user.avatarURL) { %>
+          <img src="<%= user.avatarURL%>" alt="<%= user.tag%>" />
+          <% } else { %>
+          <div class="user-image nav">
+            <%= user.username.split(" ").map((str, i) => i < 3 ? str[0] :
+            "").join("")%>
+          </div>
+          <%}%>
+        </a>
+      </li>
+      <% } %> <% } else { %>
+      <div class="dropdown">
+        <div class="label">More<i class="fas fa-sort-down"></i></div>
+        <ul>
+          <a href="/explore"><li>Explore</li></a>
+          <a href="/queue"><li>Queue</li></a>
+        </ul>
+      </div>
+      <li class="auth">
+        <a href="/login"
+          ><span class="i"><i class="fad fa-sign-in-alt"></i></span
+          ><span class="text">Login</span></a
+        >
+      </li>
+      <% } %>
+    </ul>
+  </div>
+</nav>

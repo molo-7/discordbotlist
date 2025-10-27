@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <noscript
+      ><meta http-equiv="refresh" content="0; url=/noscript"
+    /></noscript>
+    <%- include("./constants/head.html") %>
+    <title>Atom | Discord Bot List</title>
+    <link rel="stylesheet" href="/styles/addbot.css" />
+  </head>
+  <body>
+    <%- include("./constants/loader.html") %>
+    <%-include("./constants/navbar.ejs") %> 
+    <% if (showForm) { %>
+    <div
+      hidden
+      data-id="<%= bot.id %>"
+      data-tag="<%= bot.username%>#<%= bot.discriminator%>"
+      <% if (bot.avatar) { %>
+      data-avatar="https://cdn.discordapp.com/avatars/<%= bot.id %>/<%=bot.avatar %>.webp"
+      <% } %>
+      data-submitter="<%= user.username %>"
+      data-submitteravatar="<%= user.avatarURL ? user.avatarURL : ""%>"
+      id="botmodel"
+    ></div>
+    <main class="container">
+      <div class="bot">
+        <div class="info">
+          <div class="avatar">
+            <% if (bot && bot.avatar) { %>
+            <img
+              src="https://cdn.discordapp.com/avatars/<%= bot.id %>/<%=bot.avatar %>.webp"
+              alt="<%= bot.username%>"
+            />
+            <% } else { %>
+            <div class="user-image bot">
+              <%= user.username.split(" ").map((str, i) => i < 3 ? str[0]
+              :"").join("")%>
+            </div>
+            <%}%>
+          </div>
+          <div class="tag">
+            <%= bot.username%><span class="discriminator"
+              >#<%= bot.discriminator%></span
+            >
+          </div>
+        </div>
+        <div class="btn" onclick="window.location.href = '/addbot'">
+          <i class="fad fa-robot"></i> Switch application
+        </div>
+      </div>
+      <form class="form">
+        <div class="field">
+          <div class="desc">
+            <h3 class="required">
+              <i class="far fa-pencil-alt"></i>Short Description
+            </h3>
+            <p>A brief description of what your bot is about.</p>
+          </div>
+          <div class="input">
+            <textarea
+              name="about"
+              id="brief-desc"
+              required
+              maxlength="140"
+              minlength="50"
+              placeholder="A wholesome and friendly bot, here to make everyone happy!"
+              class="<%=errTarget === "brief-desc" ? "required" : ""%>"
+            ></textarea>
+            <% if (errTarget === "brief-desc") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+          </div>
+        </div>
+        <div class="field">
+          <div class="desc">
+            <h3 class="required">
+              <i class="fab fa-markdown"></i>Long Description
+            </h3>
+            <p>
+              We want to hear the whole story!
+              <span>Supports markdown</span>.
+            </p>
+          </div>
+          <div class="input">
+            <textarea
+              name="md"
+              id="long-desc"
+              required
+              placeholder="# Your long description goes here !"
+              maxlength="2000"
+              minlength="200"
+              style="height: 250px"
+              class="<%=errTarget === "long-desc" ? "required" : ""%>"
+            ></textarea>
+            <% if (errTarget === "long-desc") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+          </div>
+        </div>
+        <div class="field input">
+          <div class="desc">
+            <h3 class="required"><i class="fad fa-tools"></i>Prefix</h3>
+            <p>What keyword or phrase does your bot react to?</p>
+          </div>
+          <div class="input">
+            <input
+              type="text"
+              name="prefix"
+              maxlength="5"
+              required
+              class="input<%=errTarget === "prefix" ? " required" : ""%>"
+              placeholder="@"
+              id="prefix"
+            />
+            <label class="checkbox">Customizable
+              <input type="checkbox" name="customizable" id="customizable">
+              <span class="checkmark"></span>
+            </label>
+            <% if (errTarget === "prefix") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+          </div>
+        </div>
+        <div class="field">
+          <div class="desc">
+            <h3 class="required"><i class="fad fa-tags"></i>Tags</h3>
+            <p>What are the best qualities of this beautiful creation?</p>
+          </div>
+          <div class="input">
+            <div class="dropdown<%=errTarget === "dropdown" ? " required" : ""%>" id="dropdown">
+              <div class="header">
+                <div class="selected">
+                  <div class="no-tags">Select tags</div>
+                </div>
+                <i class="fas fa-sort-down icon"></i>
+              </div>
+              <ul class="list">
+                <% tags.forEach(tag => { %>
+                <li class="li" data-id="<%= tag %>"><%= tag %></li>
+                <% }) %>
+              </ul>
+            </div>
+            <% if (errTarget === "dropdown") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+          </div>
+        </div>
+        <div class="field input">
+          <div class="desc">
+            <h3 class="required">
+              <i class="fad fa-external-link"></i>Invite URL
+            </h3>
+            <p>
+              A place where users can install your bot on their Discord server.
+            </p>
+          </div>
+          <div class="input">
+            <input
+              type="text"
+              name="invite-url"
+              required
+              class="input<%=errTarget === "invite-url" ? " required" : ""%>"
+              placeholder="https://discord.com/oauth2/authorize?client_id=872945552868905090&permissions=0&scope=bot"
+              id="invite-url"
+            />
+            <% if (errTarget === "invite-url") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+          </div>
+        </div>
+        <div class="field input">
+          <div class="desc">
+            <h3><i class="fad fa-user-headset"></i>Support Server Link</h3>
+            <p>The main discord community associated with your bot.</p>
+          </div>
+          <div class="input">
+            <input
+              type="text"
+              name="support-server"
+              class="input<%=errTarget === "support-server" ? " required" : ""%>"
+              placeholder="https://discord.gg/fGdy93f3hh"
+              id="support-server"
+            />
+            <% if (errTarget === "support-server") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+          </div>
+        </div>
+        <div class="field input">
+          <div class="desc">
+            <h3><i class="fab fa-github-alt"></i>Github</h3>
+            <p>Github repository for your bot</p>
+          </div>
+          <div class="input">
+            <input
+              type="text"
+              name="github"
+              class="input<%=errTarget === "github-repo" ? " required" : ""%>"
+              placeholder="https://github.com/molo-7/atombotlist"
+              id="github-repo"
+            />
+            <% if (errTarget === "github-repo") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+          </div>
+        </div>
+        <div class="field input" id="devs">
+          <div class="desc">
+            <h3><i class="fad fa-code"></i>Bot Developers</h3>
+            <p>
+              Here you can add a maximum 2 other developers for your bot,<br />
+              you can add them by their id
+            </p>
+          </div>
+          <div class="input">
+            <input
+              type="text"
+              name="dev1"
+              class="input<%=errTarget === "dev1" ? " required" : ""%>"
+              id="dev1"
+              placeholder="developer1 Id"
+              style="margin-bottom: 7px"
+            />
+            <% if (errTarget === "dev1") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+            <input
+              type="text"
+              name="dev2"
+              class="input<%=errTarget === "dev2" ? " required" : ""%>"
+              id="dev2"
+              placeholder="developer2 Id"
+              style="margin-top: 7px"
+            />
+            <% if (errTarget === "dev2") { %>
+              <div class="error"><%= errMsg %></div>
+            <% } %>
+          </div>
+        </div>
+        <input
+          type="submit"
+          value="Submit"
+          disabled
+          class="submit __"
+          id="submit"
+        />
+      </form>
+    </main>
+    <%- include("./constants/footer.html") %>
+    <script>
+      document.getElementById("<%= errTarget %>")?.scrollIntoView();
+    </script>
+    <script src="/js/bot-validator.js"></script>
+    <% } else if (notice) {%>
+      <main class="__">
+        <div class="container">
+          <div class="heading">
+            <i class="fad fa-exclamation-triangle"></i>
+            <h1><%= noticeTitle%></h1>
+          </div>
+          <div class="msg"><%- noticeMsg%></div>
+          <div class="buttons">
+            <a href="/addbot" class="btn">Change Bot Id</a>
+            <a href="/queue" class="btn">Queue</a>
+          </div>
+        </div>
+      </main>
+    <% } else { %>
+    <div class="container find-bot">
+      <div class="find-bot-form">
+        <span class="discord"><i class="fab fa-discord"></i></span>
+        <h2>Find your discord bot by it's client-id</h2>
+        <form action="" method="post">
+          <input type="text" name="botId" placeholder="Your Dicord Bot Id"
+          class="input<%= searchError ? " error" : ""%>" id="botId" />
+          <input
+            type="submit"
+            value="Search"
+            id="find"
+            disabled
+            class="submit"
+          />
+        </form>
+        <% if (searchError) { %>
+        <span class="error"><%- searchError %></span>
+        <% } %>
+      </div>
+    </div>
+    <script>
+      const botId = document.getElementById("botId");
+      const submit = document.getElementById("find");
+      const parentNode = document.querySelector(".find-bot-form");
+      botId.addEventListener("keyup", (e) => {
+        submit.disabled = botId.value.length === 0;
+        botId.classList.remove("error");
+        const errorEle = Array.from(parentNode.children).find((e) =>
+          e.classList.contains("error")
+        );
+        if (errorEle) errorEle.remove();
+      });
+      let ok = false,
+        error = false;
+      submit.onclick = (e) => {
+        if (ok) return;
+        e.preventDefault();
+        const errorEle = Array.from(parentNode.children).find((e) =>
+          e.classList.contains("error")
+        );
+        if (errorEle) errorEle.remove();
+        if (botId.value.length === 0) {
+          const errEle = document.createElement("span");
+          errEle.className = "error";
+          errEle.textContent = "Bot Id Can't Be Empty!";
+          botId.classList.add("error");
+          parentNode.appendChild(errEle);
+          error = true;
+        } else if (botId.value.length !== 18 || isNaN(botId.value)) {
+          const errEle = document.createElement("span");
+          errEle.className = "error";
+          errEle.textContent = "Invalid Discord Id !!";
+          botId.classList.add("error");
+          parentNode.appendChild(errEle);
+          error = true;
+        }
+        if (!error) (ok = true), submit.click();
+      };
+    </script>
+    <% } %> <%- include("./constants/scripts.html") %>
+  </body>
+</html>

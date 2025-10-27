@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("./constants/head.html") %>
+    <title>Atom | Discord Bot List</title>
+    <link rel="stylesheet" href="/styles/home.css" />
+  </head>
+  <body>
+    <%- include("./constants/loader.html") %>
+    <header>
+      <%- include("./constants/navbar.ejs") %>
+      <div class="container landing">
+        <div class="left-col">
+          <h1><i class="fal fa-atom"></i>Atom botlist</h1>
+          <p>Discover discord bots, and have the best experience with our diverse range</p>
+          <form action="/explore" method="get" class="search-bar">
+            <input
+              type="text"
+              name="q"
+              required
+              maxlength="50"
+              placeholder="Search bots...."
+            />
+            <button type="submit"><i class="fal fa-search"></i></button>
+          </form>
+          <div class="tags-container">
+            <a href="/explore?tag=fun" class="tag"><i class="fal fa-smile-wink"></i>fun</a>
+            <a href="/explore?tag=moderation" class="tag"><i class="far fa-shield"></i>moderation</a>
+            <a href="/explore?tag=music" class="tag"><i class="fal fa-music"></i>music</a>
+            <a href="/explore" class="tag"><i class="fal fa-tags"></i>explore tags</a>
+          </div>
+        </div>
+        <div class="right-col"><img src="/images/landing.svg" alt="landing image"></div>
+      </div>
+    </header>
+    <main>
+        <section>
+          <div class="container">
+            <h2><i class="fad fa-badge-check" style="color: #5865f2;"></i>verified bots</h2>
+            <p>They are ranked according to the votes they received.</p>
+            <div class="bots home">
+              <div class="g">
+                <% verifiedBots.forEach(bot => { %>
+                <div class="bot">
+                  <div class="bot-header">
+                    <div class="avatar">
+                      <% if (bot.avatarURL) { %>
+                      <img src="<%= bot.avatarURL%>" alt="<%=bot.username%>" />
+                      <% } else { %>
+                      <div class="user-image bot">
+                        <%= bot.username.split(" ").map((str, i) => i < 3 ? str[0] :"").join("")%>
+                      </div>
+                      <%}%>
+                      <a href="/bot/<%=bot.discord_id%>" class="name"><%=bot.username%>
+                      <span class="votes _h">
+                        <% const votes = Math.abs(bot.votes) > 999 ? Math.sign(bot.votes)*((Math.abs(bot.votes)/1000).toFixed(1))+ 'k' : Math.sign(bot.votes)*Math.abs(bot.votes) %>
+                        <i class="fas fa-chevron-up"></i><%= votes %>
+                      </span>
+                      </a>
+                    </div>
+                    <div class="desc h"><%= bot.about%></div>
+                    <div class="_">
+                      <div class="votes">
+                        <i class="fas fa-chevron-up"></i><%= votes %> <span>Upvotes</span>
+                      </div>
+                      <div class="buttons">
+                        <a href="<%= bot.inviteUrl%>" class="btn">Add</a>
+                        <a href="/bot/<%= bot.discord_id%>/vote" class="btn vote"><i class="fas fa-chevron-up"></i>Upvote</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="desc"><%= bot.about%></div>
+                  <% if (bot.supportServer || bot.github) { %>
+                  <div class="links">
+                    <% if (bot.supportServer) { %>
+                    <a href="<%= bot.supportServer %>"><i class="fab fa-discord"></i></a>
+                    <% } %>
+                    <% if (bot.github) { %>
+                    <a href="<%= bot.github %>"><i class="fab fa-github"></i></a>
+                    <% } %>
+                  </div>
+                  <% } %>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="container">
+            <h2><i class="fad fa-fire" style="color: #ff2d2d;"></i>most popular</h2>
+            <p>They are ranked according to the votes they received.</p>
+            <div class="bots home">
+              <div class="g">
+                <% topBots.forEach(bot => { %>
+                <div class="bot">
+                  <div class="bot-header">
+                    <div class="avatar">
+                      <% if (bot.avatarURL) { %>
+                      <img src="<%= bot.avatarURL%>" alt="<%=bot.username%>" />
+                      <% } else { %>
+                      <div class="user-image bot">
+                        <%= bot.username.split(" ").map((str, i) => i < 3 ? str[0] :"").join("")%>
+                      </div>
+                      <%}%>
+                      <a href="/bot/<%=bot.discord_id%>" class="name"><%=bot.username%>
+                        <% if (bot.verified) { %>
+                          <i class="fas fa-badge-check"></i>
+                        <% } %>
+                      <span class="votes _h">
+                        <% const votes = Math.abs(bot.votes) > 999 ? Math.sign(bot.votes)*((Math.abs(bot.votes)/1000).toFixed(1))+ 'k' : Math.sign(bot.votes)*Math.abs(bot.votes) %>
+                        <i class="fas fa-chevron-up"></i><%= votes %>
+                      </span>
+                      </a>
+                    </div>
+                    <div class="desc h"><%= bot.about%></div>
+                    <div class="_">
+                      <div class="votes">
+                        <i class="fas fa-chevron-up"></i><%= votes %> <span>Upvotes</span>
+                      </div>
+                      <div class="buttons">
+                        <a href="<%= bot.inviteUrl%>" class="btn">Add</a>
+                        <a href="/bot/<%= bot.discord_id%>/vote" class="btn vote"><i class="fas fa-chevron-up"></i>Upvote</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="desc"><%= bot.about%></div>
+                  <% if (bot.supportServer || bot.github) { %>
+                  <div class="links">
+                    <% if (bot.supportServer) { %>
+                    <a href="<%= bot.supportServer %>"><i class="fab fa-discord"></i></a>
+                    <% } %>
+                    <% if (bot.github) { %>
+                    <a href="<%= bot.github %>"><i class="fab fa-github"></i></a>
+                    <% } %>
+                  </div>
+                  <% } %>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="container">
+            <h2><i class="fad fa-sparkles" style="color: #ffd700;"></i>New Bots</h2>
+            <p>They are listed according to the date they were added.</p>
+            <div class="bots home">
+              <div class="g">
+                <% lastAddedBots.forEach(bot => { %>
+                <div class="bot">
+                  <div class="bot-header">
+                    <div class="avatar">
+                      <% if (bot.avatarURL) { %>
+                      <img src="<%= bot.avatarURL%>" alt="<%=bot.username%>" />
+                      <% } else { %>
+                      <div class="user-image bot">
+                        <%= bot.username.split(" ").map((str, i) => i < 3 ? str[0] :"").join("")%>
+                      </div>
+                      <%}%>
+                      <a href="/bot/<%=bot.discord_id%>" class="name"><%=bot.username%>
+                        <% if (bot.verified) { %>
+                          <i class="fas fa-badge-check"></i>
+                        <% } %>
+                      <span class="votes _h">
+                        <% const votes = Math.abs(bot.votes) > 999 ? Math.sign(bot.votes)*((Math.abs(bot.votes)/1000).toFixed(1))+ 'k' : Math.sign(bot.votes)*Math.abs(bot.votes) %>
+                        <i class="fas fa-chevron-up"></i><%= votes %>
+                      </span>
+                      </a>
+                    </div>
+                    <div class="desc h"><%= bot.about%></div>
+                    <div class="_">
+                      <div class="votes">
+                        <i class="fas fa-chevron-up"></i><%= votes %> <span>Upvotes</span>
+                      </div>
+                      <div class="buttons">
+                        <a href="<%= bot.inviteUrl%>" class="btn">Add</a>
+                        <a href="/bot/<%= bot.discord_id%>/vote" class="btn vote"><i class="fas fa-chevron-up"></i>Upvote</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="desc"><%= bot.about%></div>
+                  <% if (bot.supportServer || bot.github) { %>
+                  <div class="links">
+                    <% if (bot.supportServer) { %>
+                    <a href="<%= bot.supportServer %>"><i class="fab fa-discord"></i></a>
+                    <% } %>
+                    <% if (bot.github) { %>
+                    <a href="<%= bot.github %>"><i class="fab fa-github"></i></a>
+                    <% } %>
+                  </div>
+                  <% } %>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </section>
+      <% if (!isUser) { %>       
+            <div class="container add-your-bot">
+              <h2>Are you a bot developer?</h2>
+              <a href="/addbot" class="btn">Add Your Bot</a>
+            </div>
+      <% } %>
+    </main>
+    <%- include("./constants/footer.html") %>
+    <%- include("./constants/scripts.html") %>
+  </body>
+</html>

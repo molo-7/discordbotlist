@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta property="og:image" content="<%= bot.avatarURL ? bot.avatarURL : ""%>" />
+    <meta property="og:title" content="Voting For <%= bot.username %>" />
+    <meta property="og:image" content="<%= bot.avatarURL ? bot.avatarURL : ""%>" />
+    <meta property="og:description" content="<%= bot.about %>" />
+    <meta property="twitter:image" content="" />
+    <%- include("./constants/head.html") %> 
+    <link rel="stylesheet" href="/styles/vote.css" />
+    <title>Voting For <%= bot.username %> | Atom</title>
+  </head>
+  <body>
+    <%- include("./constants/navbar.ejs") %> <% if (!isUser) { %>
+    <div class="_notice">
+      <div class="notice">
+        <h3>Uh, Oh! 😱</h3>
+        <p>You must be logged in to vote</p>
+        <div class="buttons">
+          <a href="/login" class="btn">
+            Login to vote
+          </a>
+          <a href="/" class="btn">
+            Return Home
+          </a>
+        </div>
+      </div>
+    </div>
+    <% } else { %> <%if (upvoted) { %>
+    <div class="_notice bg upvoted">
+      <div class="notice">
+        <i
+          class="fas fa-times close"
+          onclick="document.querySelector('._notice').remove()"
+        ></i>
+        <h3>Upvoted 🎉</h3>
+        <p>You upvoted <%= bot.username%> successfully 🔼</p>
+        <div class="buttons">
+          <a href="/bot/<%= bot.discord_id%>" class="btn">
+          Back to <%= bot.username%>
+          </a>
+          <a href="/" class="btn">
+            Return Home
+          </a>
+        </div>
+      </div>
+    </div>
+    <% } else if (cooldownTimestamp) { %> <% const remMS = 43200000 -
+    (Date.now() - cooldownTimestamp); let time; if (remMS >= 3600000) { time =
+    Math.round(remMS / 60 / 60 / 1000) > 1 ? `${Math.round(remMS / 60 / 60 /
+    1000)} hours` : `${Math.round(remMS / 60 / 60 / 1000)} hour` } else if
+    (remMs >= 60000) { time = Math.round(remMS / 60 / 1000) > 1 ?
+    `${Math.round(remMS / 60 / 1000)} minutes` : `${Math.round(remMS / 60 /
+    1000)} minute` } else { time = Math.round(remMS / 1000) > 1 ?
+    `${Math.round(remMS / 1000)} seconds` : `${Math.round(remMS / 1000)} second`
+    } %>
+    <div class="_notice bg">
+      <div class="notice">
+        <i
+          class="fas fa-times close"
+          onclick="document.querySelector('._notice').remove()"
+        ></i>
+        <h3>Cooldown ⏲️</h3>
+        <p>You can upvote <%= bot.username%> again after <%=time %></p>
+        <div class="buttons">
+          <a href="/bot/<%= bot.discord_id%>" class="btn">
+            Back to <%= bot.username%>
+          </a>
+          <a href="/" class="btn">
+            Return Home
+          </a>
+        </div>
+      </div>
+    </div>
+    <% } %>
+    <main>
+      <div class="container">
+        <a href="/bot/<%= bot.discord_id %>" class="btn">
+            <i class="fal fa-long-arrow-left"></i> <%= bot.username %>
+        </a>
+        <div class="vote">
+          <div class="title">
+            <div class="avatar">
+              <% if (bot.avatarURL) { %>
+              <img src="<%= bot.avatarURL%>" alt="<%= bot.username%>" />
+              <% } else { %>
+              <div class="user-image">
+                <%= bot.username.split(" ").map((str, i) => i < 3 ? str[0] :
+                "").join("")%>
+              </div>
+              <%}%>
+            </div>
+            <div class="text">
+              <h2>Voting For <%= bot.username %></h2>
+              <div class="tags">
+                <% bot.tags.forEach(tag => { %>
+                <div class="tag"><span>#</span><span><%= tag%></span></div>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+          <form
+            action="/bot/actions/vote/<%= bot.discord_id%>"
+            class="vote"
+            method="POST"
+          >
+            <input type="submit" value="Vote" <%= cooldownTimestamp? "disabled"
+            : ""%>/>
+          </form>
+        </div>
+      </div>
+    </main>
+    <%- include("./constants/scripts.html") %> <% } %>
+  </body>
+</html>

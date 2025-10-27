@@ -1,0 +1,33 @@
+{
+    "ORIGIN": "https://atombotlist.herokuapp.com",
+    "HOST_NAME": "atombotlist.xyz",
+    "DISCORD_INVITE": "https://discord.gg/mwS4V85GDY",
+    "DISCORD_CHANNEL_ID": "942498148507607120",
+    "ROLE_ID": "900147265795158027",
+    "TAGS": [
+        "Fun",
+        "Moderation",
+        "Utility",
+        "Music",
+        "Economy",
+        "Game",
+        "Social",
+        "Meme",
+        "Roleplay",
+        "Leveling",
+        "Anime",
+        "Giveaways",
+        "Logging",
+        "Emojis",
+        "Gaming",
+        "Reaction Roles",
+        "Role Management",
+        "Chat Bot",
+        "translation",
+        "Auto Moderation",
+        "Custom Commands",
+        "Web Dashboard",
+        "Radio",
+        "Community"
+    ]
+}

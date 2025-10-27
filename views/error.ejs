@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="/images/favicon.ico"
+      type="image/x-icon"
+      sizes="16x16"
+      />
+      <link
+      href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <title>Error | Something Went Wrong</title>
+    <link rel="stylesheet" href="/styles/error.css" />
+  </head>
+  <body>
+    <div class="container wrapper">
+      <div class="title">
+        <span class="i"><i class="fas fa-exclamation-triangle"></i></span>
+        Something Went Wrong
+      </div>
+      <div class="message">
+        <p>
+          Oops, something went wrong while the process<%= !isUser ? `, if you
+          are trying to login please try again` : ""%>
+        </p>
+        <div class="buttons">
+          <a href="/" class="btn">Return Home</a>
+          <%if (!isUser) {%>
+          <a href="/login" class="btn">Login</a>
+          <% } %>
+        </div>
+        <div class="msg">
+          If you believe something should be here, contact us through our
+          <a href="/discord">discord</a>
+        </div>
+      </div>
+  </body>
+</html>

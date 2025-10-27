@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("./constants/head.html") %>
+    <title>Atom | Explore</title>
+    <link rel="stylesheet" href="/styles/explore.css" />
+  </head>
+  <body>
+    <%-include("./constants/navbar.ejs") %>
+    <main>
+      <div class="container">
+        <% if (results) { %>
+        <button
+          class="back-history"
+          onclick="window.location.href = '/explore'"
+          style="margin-bottom: 40px"
+        >
+          <i class="fas fa-arrow-alt-left"></i> Back
+        </button>
+        <% } %>
+        <h1>Explore Discord Bots</h1>
+        <div class="search">
+          <form action="/explore" method="get">
+            <% if (tag) { %>
+            <input type="hidden" name="tag" value="<%= tag.toLowerCase() %>" />
+            <% } %>
+            <input
+              type="text"
+              name="q"
+              required
+              maxlength="50"
+              class="input"
+              placeholder="Search by name or description"
+            />
+            <button type="submit"><i class="fas fa-search"></i></button>
+          </form>
+        </div>
+        <hr />
+        <% if (results) { %>
+        <h1>Search Info 🔍</h1>
+        <div class="search-info">
+          <% if (q) { %>
+          <h1>
+            Query <span class="item"><%= q %></span>
+          </h1>
+          <% } %> <% if (tag) { %>
+          <h1>
+            Tag <span class="item"><%= tag %></span>
+          </h1>
+          <% } %>
+          <% if (pages) { %>
+            <h1>
+            Page <span class="item"><%= pages.current %></span>
+          </h1>
+          <% } %>
+        </div>
+        <% if (results.length === 0) { %>
+        <h1
+          id="_1"
+          style="
+            margin: 65px auto 150px;
+            text-align: center;
+            font-size: 40px;
+            color: #929c9e;
+          "
+        >
+          No Results. 😕
+        </h1>
+        <% } else { %>
+        <h1>Results.</h1>
+        <div class="results">
+          <% results.forEach((bot, i) => { %>
+          <div class="bot" id="_<%= i + 1 %>">
+            <div class="_info">
+              <div class="avatar">
+                <% if (bot.avatarURL) { %>
+                <a href="/bot/<%= bot.discord_id %>"
+                  ><img src="<%= bot.avatarURL%>" alt="<%= bot.username%>"
+                /></a>
+                <% } else { %>
+                <a class="user-image" href="/bot/<%= bot.discord_id %>">
+                  <%= bot.username.split(" ").map((str, i) => i < 3 ? str[0] :
+                  "").join("")%>
+                </a>
+                <%}%>
+              </div>
+              <div class="info">
+                <div class="_">
+                  <a class="username" href="/bot/<%= bot.discord_id%>"
+                    ><%= bot.username %></a
+                  >
+                  <div class="votes">
+                    <% const votes = Math.abs(bot.votes) > 999 ?
+                    Math.sign(bot.votes)*((Math.abs(bot.votes)/1000).toFixed(1))
+                    + 'k' : Math.sign(bot.votes)*Math.abs(bot.votes) %>
+                    <i class="fas fa-chevron-up"></i><%= votes %>
+                  </div>
+                </div>
+                <div class="tags">
+                  <% bot.tags.forEach(tag => { %>
+                  <a class="tag" href="/explore?tag=<%= tag.toLowerCase() %>">
+                    <span class="hash">#</span><span><%= tag %></span>
+                  </a>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+                <div class="about"><%= bot.about %></div>
+            <div class="buttons">
+              <a href="<%= bot.inviteUrl%>" class="btn"
+                >Add <%= bot.username%></a
+              >
+              <a href="/bot/<%= bot.discord_id%>/vote" class="btn vote"
+                ><i class="fas fa-chevron-up"></i>Upvote</a
+              >
+            </div>
+          </div>
+          <% }) %>
+        </div>
+        <hr />
+    
+        <% if (pages) { %>
+          <div class="pages">
+            <% let forwardBtn = false; %>
+            <% let backwardBtn = false; %>
+            <% for (let pageNumber = 1; pageNumber <= pages.available; pageNumber++) { %>
+              <% if (pageNumber - pages.current > 1) { %>
+                <% if (!forwardBtn) { %>
+                  <a href="/explore?page=<%= pageNumber %>&tag=<%= tag %>&q=<%= q %>" method="get">
+                    <i class="fal fa-angle-double-right"></i>
+                  </a>
+                <% } %>
+                <% forwardBtn = true %>
+              <% } else if (pages.current -  pageNumber > 1) { %>
+                <% if (!backwardBtn) { %>
+                  <a href="/explore?page=1&tag=<%= tag %>&q=<%= q %>" method="get">
+                    <i class="fal fa-angle-double-left"></i>
+                  </a>
+                <% } %>
+                <% backwardBtn = true %>
+              <% } else if (pageNumber !== pages.current) { %> 
+                <a href="/explore?page=<%= pageNumber %>&tag=<%= tag %>&q=<%= q %>" method="get">
+                  <%= pageNumber %>
+                </a>
+              <% } else { %>
+                <div class="current"><%= pageNumber%></div>
+              <% } %>
+            <% } %>
+          </div>
+        <% } %>
+
+        <% } %>     
+        <% } else { %>
+        <h1>All Tags</h1>
+        <div class="tags-container">
+          <% tags.forEach(tag => { %>
+          <form action="/explore" method="get">
+            <input
+              type="submit"
+              name="tag"
+              value="<%= tag.toLowerCase() %>"
+              class="tag"
+            />
+          </form>
+          <% }) %>
+        </div>
+        <% } %>
+      </div>
+    </main>
+    <%-include("./constants/footer.html") %>
+    <script>
+      document.documentElement.scrollTop = document
+        .getElementById("_1")
+        ?.getBoundingClientRect().top;
+    </script>
+    <%-include("./constants/scripts.html") %>
+  </body>
+</html>

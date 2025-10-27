@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta property="og:image" content="<%=bot.avatarURL ? bot.avatarURL : ""%>" />
+    <meta property="og:title" content="<%= bot.username %> on atombotlist" />
+    <meta property="og:image" content="<%= bot.avatarURL ? bot.avatarURL : ""%>" />
+    <meta property="og:description" content="<%= bot.about %>" />
+    <meta property="twitter:image" content="" />
+    <%- include("./constants/head.html") %> 
+    <link rel="stylesheet" href="/styles/bots.css" />
+    <link rel="stylesheet" href="/styles/markdown.css" />
+    <title><%= bot.username %>#<%= bot.discriminator %> | Atom</title>
+  </head>
+  <body>
+    <%- include("./constants/loader.html") %>
+    <%- include("./constants/navbar.ejs") %> 
+    <% if (actionSuccess) { %>
+      <div class="actionSuccess"><span><%= actionSuccess %></span><i class="fas fa-times" onclick="document.querySelector('.actionSuccess').remove()"></i></div>
+    <% } else if (actionFalid) { %>
+      <div class="actionFalid"><span><%= actionFalid %></span><i class="fas fa-times" onclick="document.querySelector('.actionSuccess').remove()"></i></div>
+    <% } %>
+    <div id="_id" data-id="<%=bot.discord_id%>" data-username="<%= bot.username %>"></div>
+    <% if (inQueue) { %>
+    <% if
+    (isAdmin) { %>
+    <div class="hint">
+      <div class="container">
+        👋 Hey Admin, This bot still in queue and awating apporval !
+      </div>
+    </div>
+    <% } else { %>
+    <div class="hint">
+      <div class="container">
+        Hey <%= user.username%>, Your bot is currently awating apporval .. Join our <a href="/discord" style="color: inherit;">discord</a> and get noticed with results.
+      </div>
+    </div>
+    <% } %> <% } %>
+    <header>
+      <div class="container">
+        <div class="bot">
+          <% if (!inQueue && bot.verified) {%> <span class="verified-atom" title="Verified"><i class="fas fa-badge-check"></i></span><% } %>
+          <div class="avatar">
+            <% if (bot.avatarURL) { %>
+            <img
+              src="<%= bot.avatarURL%>"
+              alt="<%= bot.username %>#<%= bot.discriminator %>"
+            />
+            <% } else { %>
+            <div class="user-image">
+              <%= bot.username.split(" ").map((str, i) => i < 3 ? str[0] :
+              "").join("")%>
+            </div>
+            <%}%>
+          </div>
+          <div class="basic-info">
+            <div class="statics-container">
+              <div class="username">
+                <%= bot.username %>
+              </div>
+              <div class="statics">
+                <% if (!inQueue) { %>
+                  <div class="votes">
+                    <%
+                    const votes = Math.abs(bot.votes) > 999 ? Math.sign(bot.votes)*((Math.abs(bot.votes)/1000).toFixed(1)) + 'k' : Math.sign(bot.votes)*Math.abs(bot.votes)
+                    %>
+                    <i class="fas fa-chevron-up"></i><span><%= votes%> upvotes since joining !</span><span class="hidden"><%= votes%> upvotes!</span>
+                  </div>
+                  <%} %>
+              </div>
+            </div>
+            <p class="about"><%= bot.about %></p>
+          </div>
+        </div>
+        <div class="buttons">
+          <a href="<%= bot.inviteUrl%>" class="btn"
+            >Add <%= bot.username%></a
+          >
+          <a href="/bot/<%= bot.discord_id%>/vote" class="btn vote<%= inQueue ? " disabled" : ""%>"
+            ><i class="fas fa-chevron-up"></i>Upvote</a
+          >
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <div class="controllers">
+          <div class="controller active" id="overview-btn">Overview</div>
+          <div class="controller" id="info-btn">Info</div>
+        </div>
+        <div class="article" id="overview">
+          <article><%- bot.markdown %></article>
+        </div>
+        <div class="sidebar" id="info">
+          <%if (isCreator) {%>
+            <section class="actions">
+              <h2><i class="fad fa-cogs"></i>Creators Actions</h2>
+              <hr />
+              <div class="actions">
+              <div class="action edit">
+                <a href="/bot/<%=bot.discord_id%>/edit" class="edit"><i class="fas fa-edit"></i> Edit</a>
+              </div>
+              <% if (!inQueue) {%>
+                <div class="action sync">
+                  <a href="/bot/actions/sync/<%=bot.discord_id%>" class="sync"><i class="fas fa-sync-alt"></i> Sync</a>
+                </div>
+              <% } %>
+              <div class="action remove<%= bot.submitter.discord_id !== user.discord_id ? " disabled" : ""%>">
+                <a class="remove" id="remove-btn"><i class="fas fa-trash"></i>Remove</a>
+              </div>
+              </div>
+            </section>
+          <% } %>
+          <section class="details">
+            <h2><i class="fad fa-info-circle"></i>Details</h2>
+            <hr />
+            <div class="row">
+              <strong>Prefix:</strong
+              ><span
+                ><%= bot.prefix.content%><span
+                  ><%= bot.prefix.customizable ? "(Customizable)" : ""%></span
+                ></span
+              >
+            </div>
+            <div class="row">
+              <strong>Joined Atom since:</strong>
+              <% if (bot.timestamp) { %> <% if ((Date.now() - bot.timestamp) <=
+              86400000) { %> <% if ((Date.now() - bot.timestamp) < 3600000) { %>
+              <span
+                ><%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 ) === 0
+                ? "" : Math.floor((Date.now() - bot.timestamp) / 1000 / 60 )%>
+                <%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 ) > 1 ?
+                "minutes" : (Math.floor((Date.now() - bot.timestamp) / 1000 /
+                60) === 0 ? "few seconds" : "minute")%> ago</span
+              >
+              <% } else { %>
+              <span
+                ><%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 / 60)%>
+                <%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 / 60) >
+                1 ? "hours" : "hour"%> ago</span
+              >
+              <% } %> <% } else if ((Date.now() - bot.timestamp) <= 604800000)
+              {%>
+              <span
+                ><%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 / 60 /
+                24)%> <%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 /
+                60 / 24) > 1 ? "days" : "day"%> ago</span
+              >
+              <% } else if ((Date.now() - bot.timestamp) <= 2629743000) { %>
+              <span
+                ><%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 / 60 /
+                24 / 7)%> <%= Math.floor((Date.now() - bot.timestamp) / 1000 /
+                60 / 60 / 24 / 7) > 1 ? "weeks" : "week"%> ago</span
+              >
+              <% } else if ((Date.now() - bot.timestamp) <= 31556926000) {%>
+              <span
+                ><%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 / 60 /
+                24 / 30)%> <%= Math.floor((Date.now() - bot.timestamp) / 1000 /
+                60 / 60 / 24 / 30 ) > 1 ? "months" : "month"%> ago</span
+              >
+              <% } else { %>
+              <span
+                ><%= Math.floor((Date.now() - bot.timestamp) / 1000 / 60 / 60 /
+                24 / 30 / 12)%> <%= Math.floor((Date.now() - bot.timestamp)
+                /1000 / 60 / 60 / 24 / 30 / 12) > 1 ? "months" : "month"%>
+                ago</span
+              >
+              <% } %> <% } else {%>
+              <span>N/A</span>
+              <% } %>
+            </div>
+          </section>
+          <section class="tags">
+            <h2><i class="fad fa-tags"></i>Tags</h2>
+            <hr />
+            <div class="tags-wrapper">
+              <% bot.tags.forEach(tag => { %>
+              <div class="tag">
+                <span class="hash">#</span><span class="label"><%= tag%></span>
+              </div>
+              <% }) %>
+            </div>
+          </section>
+          <section class="creators">
+            <% if (bot.developers.length > 0) { %>
+            <h2><i class="far fa-users"></i>Creators</h2>
+            <% } else { %>
+            <h2><i class="far fa-user"></i>Creator</h2>
+            <% } %>
+            <hr />
+            <div class="creators-wrapper">
+              <a href="/user/<%= bot.submitter.discord_id%>">
+                <div class="creator owner">
+                  <div class="crown"><i class="fad fa-crown"></i></div>
+                  <div class="avatar">
+                    <% if (bot.submitter.avatarURL) { %>
+                    <img
+                      src="<%= bot.submitter.avatarURL%>"
+                      alt="<%= bot.submitter.username%>"
+                    />
+                    <% } else { %>
+                    <div class="user-image nav">
+                      <%= bot.submitter.username.split(" ").map((str, i) => i <
+                      3 ? str[0] : "").join("")%>
+                    </div>
+                    <%}%>
+                  </div>
+                  <span class="username"><%= bot.submitter.username %></span>
+                </div>
+              </a>
+              <% bot.developers.forEach(dev => { %>
+              <a href="/user/<%= dev.discord_id%>">
+                <div class="creator">
+                  <div class="avatar">
+                    <% if (dev.avatarURL) { %>
+                    <img src="<%= dev.avatarURL%>" alt="<%= dev.username%>" />
+                    <% } else { %>
+                    <div class="user-image nav">
+                      <%= dev.username.split(" ").map((str, i) => i < 3 ? str[0]
+                      : "").join("")%>
+                    </div>
+                    <%}%>
+                  </div>
+                  <span class="username"><%= dev.username %></span>
+                </div>
+              </a>
+              <% }) %>
+            </div>
+          </section>
+          <% if (bot.supportServer || bot.github) { %>
+          <section class="links">
+            <h2><i class="fad fa-external-link-square"></i>Links</h2>
+            <hr />
+            <% if (bot.supportServer) { %>
+            <div class="link discord">
+              <span class="icon"><i class="fab fa-discord"></i></span
+              ><a href="<%= bot.supportServer %>" class="label">Discord</a>
+            </div>
+            <% } %> <% if (bot.github) { %>
+            <div class="link github">
+              <span class="icon"><i class="fab fa-github"></i></span
+              ><a href="<%= bot.github%>" class="label">Github</a>
+            </div>
+            <% } %>
+          </section>
+          <% } %>
+          <% if (!inQueue && user.website_founder) { %>
+            <section class="remove">
+            <h2 style="color: rgb(221, 64, 64);"><i class="fas fa-ban" style="color: rgb(221, 64, 64);"></i>Kick <%= bot.username%></h2>
+            <hr />
+            <div class="actions">
+              <form action="/bot/actions/kick/<%= bot.discord_id%>" class="remove" method="POST">
+                <input type="submit" value="Kick" style="width: 50%; color: #fff; background-color: rgb(221, 64, 64); padding: 5px; border: none; font-size: 15px; font-weight: 500; cursor: pointer;">
+              </form>
+              </div>
+            </section>
+          <% } %>
+        </div>
+      </div>
+    </main>
+    <% if (isUser && isAdmin && inQueue) {%>
+      <div class="admin-actions container">
+        <h2>🙏 Please take a wisely action, after testing this bot in <strong>atombotlist-staff</strong> discord server</h2>
+        <div class="buttons">
+          <button id="approve" class="approve">Approve <%= bot.username %></button>
+          <button id="reject" class="reject">Reject <%= bot.username %></button>
+      </div>
+      </div>
+    <% } %>
+    <%- include("./constants/footer.html") %>
+    <script src="/js/bot-page.js"></script>
+    <%- include("./constants/scripts.html") %>
+  </body>
+</html>
+
+<!-- 
+
+    <i class="fas fa-star-half-alt"></i>
+    <i class="far fa-star"></i> empty
+    <i class="fas fa-star"></i> soild
+ -->

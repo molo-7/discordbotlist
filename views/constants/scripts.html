@@ -1,0 +1,63 @@
+<script>
+  const loader = document.getElementById("_loader");
+  const loaderStyle = document.getElementById("loaderStyle");
+  window.onload = () => {
+    loader ? loader.remove() : "";
+    loaderStyle ? loaderStyle.remove() : "";
+  };
+</script>
+
+<script>
+  const navBtn = document.getElementById("nav_btn");
+  const navList = document.querySelector("nav .container .list");
+  const dropdown = navList.querySelector(".dropdown");
+  const dropdownBtn = dropdown.querySelector(".label");
+  if (navBtn) {
+    navBtn.addEventListener("click", (e) => navList.classList.toggle("active"));
+  }
+  if (dropdown && dropdownBtn) {
+    dropdownBtn.addEventListener("click", (e) =>
+      dropdown.classList.toggle("active")
+    );
+  }
+</script>
+
+<script>
+  const images = document.querySelectorAll("img");
+  images.forEach((img) => {
+    img.addEventListener("error", () => {
+      if (img.dataset["faild"]) return;
+      if (
+        (img.alt && img.parentElement.classList.contains("avatar")) ||
+        img.parentElement.parentElement.classList.contains("avatar")
+      ) {
+        let avatar = document.createElement("div");
+        avatar.textContent = img.alt
+          .slice(
+            0,
+            img.alt.indexOf("#") === -1 ? img.alt.length : img.alt.indexOf("#")
+          )
+          .split(" ")
+          .map((str, i) => (i < 3 ? str[0] : ""))
+          .join("");
+        avatar.classList.add("user-image");
+        img.parentElement.insertBefore(avatar, img);
+        img.remove();
+      } else {
+        img.classList.add("faild");
+        img.src = "faild to load the image";
+        img.dataset["faild"] = "true";
+      }
+    });
+  });
+</script>
+
+<script>
+  console.log("%cHey 🌚", "font-size:40px; color: #fff");
+  console.log(
+    `%cchat with us on ${window.location.protocol}//${
+      window.location.hostname
+    }${window.location.port ? ":" + window.location.port : ""}/discord`,
+    "font-size:15px; color: #ffffff69"
+  );
+</script>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("./constants/head.html") %>
+    <title>Atom | Queue</title>
+    <link rel="stylesheet" href="/styles/queue.css" />
+  </head>
+  <body>
+    <%- include("./constants/loader.html") %>
+    <%- include("./constants/navbar.ejs") %>
+    <div class="container main">
+      <% if (queue.length > 0) { %>
+        <div class="table">
+          <div class="row header">
+            <div class="col"><i class="fas fa-hashtag"></i>Position</div>
+            <div class="col">
+              <div class="robot"><i class="fad fa-robot"></i></div>
+              Username#0000
+            </div>
+            <div class="col">Submitter</div>
+          </div>
+          <% queue.forEach((bot, i) => { %>
+            <div id="<%= bot.discord_id %>" class="row <%= ((i + 1) % 2) === 0 ? "_2" : "_1" %><%= isUser? (bot.submitter.discord_id === user.discord_id ? " highlight" :"") : ""%><%= isUser? (bot.developers[0]?.discord_id === user.discord_id ? " highlight" :"") : ""%><%= isUser? (bot.developers[1]?.discord_id === user.discord_id ? " highlight" :"") : ""%>">
+              <div class="col">#<%= (i + 1) < 10 ? `0${i + 1}` : i%></div>
+              <div class="col" title="<%= bot.about%>">
+                <div class="avatar">
+                  <% if (bot.avatarURL) { %>
+                    <img src="<%= bot.avatarURL%>"/>
+                    <% } else { %>
+                    <div class="user-image bot">
+                      <%= bot.tag.split(" ").map((str, i) => i < 3 ? str[0] :
+                      "").join("")%>
+                    </div>
+                    <%}%>
+                </div>
+                <a href="/bot/<%= bot.discord_id %>"><%= bot.username %></a>
+              </div>
+              <div class="col"><a href="/user/<%= bot.submitter.discord_id%>"><%= bot.submitter.username%></a></div>
+            </div>
+          <% }) %>
+        </div>
+        <script>
+          document.getElementById("<%= scrollTo%>")?.scrollIntoView({behavior: "smooth"});
+        </script>
+      <% } else { %>
+        <h1>No Bots In The Queue !!</h1>
+        <%}%>
+    <%- include("./constants/scripts.html") %>
+    </div>
+  </body>
+</html>

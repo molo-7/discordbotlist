@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta property="og:image" content="<%= owner.avatarURL ? owner.avatarURL : ""%>" />
+  <meta property="og:title" content="<%= owner.username %>" />
+  <meta property="og:description" content="<%= owner.username %>'s profile on atom botlist!" />
+  <meta property="twitter:image" content="" />
+  <%- include("./constants/head.html") %>
+  <title>
+    <%= owner.username %>'s profile
+  </title>
+  <link rel="stylesheet" href="/styles/profile.css" />
+</head>
+
+<body class="<%= (!profileOwner && !editTab && owner.bots.length === 0)  || (profileOwner && owner.bots.length === 0) && !editTab ? "no-projects" : "" %>">
+  <%- include("./constants/loader.html") %>
+  <% if (profileOwner && editTab) { %>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=/noscript" />
+  </noscript>
+  <div id="profile_data" data-bio="<%= owner.bio %>" data-banner="<%= owner.banner%>"></div>
+  <%- include("./constants/navbar.ejs") %>
+  <% if (updated) { %>
+  <div class="updated"><span>
+      <%= updated %>
+    </span><i class="fas fa-times" onclick="document.querySelector('.updated').remove()"></i></div>
+  <% } %>
+  <main class="edit_main">
+    <div class="container">
+      <button class="back-history" onclick="window.location.href = '/user/<%= owner.discord_id %>'"><i class="fas fa-arrow-alt-left"></i> Back</button>
+      <h1>Your Profile</h1>
+      <form action="/user/<%= owner.discord_id %>/edit" method="post">
+        <div class="setting" id="bio_form">
+          <div class="row1">
+            <h3>Bio</h3>
+            <p class="desc">Tell us a little something about yourself!</p>
+          </div>
+          <div class="row2">
+            <input type="text" name="bio" id="bio" maxlength="140" placeholder="<%= owner.bio || 'bots bots bots bots bots bots'%>" class="input" value="<%= owner.bio || "" %>" />
+            <% if (editProfileError && scrollTo==="#bio_form" ) { %>
+            <span class="error">
+              <%- editProfileError%>
+            </span>
+            <% } %>
+          </div>
+        </div>
+        <div class="setting" id="banner_form">
+          <div class="row1">
+            <h3>banner</h3>
+            <p class="desc">URL for your custom banner image<br>For saftey you can only submit image direct
+              link from <a href="https://imgur.com/upload">imgur</a></p>
+          </div>
+          <div class="row2">
+            <input type="text" name="banner" id="banner" maxlength="140" placeholder="https://i.imgur.com/N6uQ1zQ.jpg" class="input" value="<%=owner.banner || ""%>" />
+            <% if (editProfileError && scrollTo==="#banner_form" ) { %>
+            <span class="error">
+              <%- editProfileError%>
+            </span>
+            <% } %>
+          </div>
+        </div>
+        <input type="submit" disabled value="Submit" id="submit" class="_btn" />
+      </form>
+      <hr>
+      <section class="sync">
+        <h1>Sync your account with discord</h1>
+        <form action="/user/<%= owner.discord_id %>/sync" method="post">
+          <p class="desc" style="margin-bottom: 15px;"><i class="far fa-sync" style="margin-right: 7px;"></i>
+            sync your settings with discord, sync your username, discriminator, avatar, and banner !</p>
+          <input type="submit" class="_btn" value="Sync" id="sync" />
+          <input type="hidden" name="type" value="sync">
+        </form>
+      </section>
+    </div>
+  </main>
+  <%- include("./constants/footer.html") %>
+  <script src="/js/edit-profile.js" defer></script>
+  <% } else { %>
+  <header>
+    <%- include("./constants/navbar.ejs") %>
+    <div class="container header">
+      <%if (owner.banner) {%>
+      <div class="banner custom" style="background-image: url(<%= owner.banner %>)"></div>
+      <%} else {%>
+      <div class="banner default"></div>
+      <%}%>
+                            <div class="avatar<%= !owner.avatarURL ? " no-avatar" : "" %>">
+      <div class="holder">
+        <% if (owner.avatarURL) { %>
+        <img src="<%= owner.avatarURL%>" alt="<%=owner.username%>" />
+        <% } else { %>
+        <div class="user-image prof">
+          <%= owner.username.split(" ").map((str, i) => i < 3 ? str[0] :"").join("")%>
+        </div>
+        <%}%>
+            <% if (owner.website_founder) { %>
+        <span class=" i admin founder"><i class="fas fa-crown"></i></span>
+        <%} else if (owner.admin) {%> <span class="i admin"><i class="fas fa-shield-alt"></i></span>
+        <%}%>
+                                    </div>
+                              </div>
+                              <div class="info">
+                                <div class="title">
+                                  <%= owner.username %><span>#<%= owner.discriminator %></span>
+      </div>
+      <% if (owner.bio) {%>
+      <div class="bio">
+        <%= owner.bio %>
+      </div>
+      <%}%>
+                                    <% if (profileOwner) {%>
+      <a href="/user/<%= owner.discord_id %>?tab=edit" class="edit"><span class="i"><i class="fas fa-pen"></i></span>Edit Profile</a>
+      <%}%>
+                              </div>
+                            </div>
+                </header>
+      <% if (owner.bots.length > 0)  { %>
+      <div class="bots">
+        <div class="container<%= owner.bots.length > 1 ? ' g' : ''%>">
+          <% owner.bots.forEach(bot => { %>
+          <div class="bot">
+            <div class="bot-header">
+              <div class="avatar">
+                <% if (bot.avatarURL) { %>
+                <img src="<%= bot.avatarURL%>" alt="<%=bot.username%>" />
+                <% } else { %>
+                <div class="user-image bot">
+                  <%= bot.username.split(" ").map((str, i) => i < 3 ? str[0] :"").join("")%>
+                </div>
+                <%}%>
+                <a href="/bot/<%=bot.discord_id%>" class="name"><%=bot.username%>
+                <% if (bot.verified) { %>
+                  <i class="fas fa-badge-check"></i>
+                <% } %>
+                <span class="votes _h">
+                  <% const votes = Math.abs(bot.votes) > 999 ? Math.sign(bot.votes)*((Math.abs(bot.votes)/1000).toFixed(1))+ 'k' : Math.sign(bot.votes)*Math.abs(bot.votes) %>
+                  <i class="fas fa-chevron-up"></i><%= votes %>
+                </span>
+                </a>
+              </div>
+              <div class="desc h"><%= bot.about%></div>
+              <div class="_">
+                <div class="votes">
+                  <i class="fas fa-chevron-up"></i><%= votes %> <span>Upvotes</span>
+                </div>
+                <div class="buttons">
+                  <a href="<%= bot.inviteUrl%>" class="btn">Add</a>
+                  <a href="/bot/<%= bot.discord_id%>/vote" class="btn vote"><i class="fas fa-chevron-up"></i>Upvote</a>
+                </div>
+              </div>
+            </div>
+            <div class="desc"><%= bot.about%></div>
+            <% if (bot.supportServer || bot.github) { %>
+            <div class="links">
+              <% if (bot.supportServer) { %>
+              <a href="<%= bot.supportServer %>"><i class="fab fa-discord"></i></a>
+              <% } %>
+              <% if (bot.github) { %>
+              <a href="<%= bot.github %>"><i class="fab fa-github"></i></a>
+              <% } %>
+            </div>
+            <% } %>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+      <%- include("./constants/footer.html")%>
+      <% } %>
+      <%- include("./constants/scripts.html") %>
+      <script>
+        const target = "<%= scrollTo %>";
+        const targetElement = target ?? document.querySelector(target);
+        if (targetElement) {
+          targetElement.scrollIntoView();
+        }
+      </script>
+</body>
+
+</html>

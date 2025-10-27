@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="/images/favicon.png"
+      type="image/x-icon"
+      sizes="16x16"
+    />
+    <title>Atom | 404 Not Found</title>
+    <link rel="stylesheet" href="/styles/not_found.css" />
+  </head>
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+    .buttons {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+    }
+    a.btn {
+      margin: 0 7px !important;
+    }
+  </style>
+  <body>
+    <div class="container wrapper">
+      <div class="lost">
+        <img src="/images/not-found.svg" alt="404_landing" />
+      </div>
+      <div class="message">
+        <p>
+          Oops! We can’t seem to find the page you’re looking for.<br />Don’t
+          worry we will take you home.
+        </p>
+        <div class="buttons">
+          <a class="btn" onclick="window.history.back()"
+            >Go Back</a
+          >
+          <a href="/" class="btn">Go Home</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
